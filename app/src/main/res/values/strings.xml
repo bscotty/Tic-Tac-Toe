@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">Tic-Tac-Toe</string>
+
+    <string name="current_turn">Current Turn:</string>
+    <string name="new_game">New Game</string>
+
     <string name="spaceValue" />
     <string name="xValue">X</string>
     <string name="oValue">O</string>
-    <string name="current_turn">Current Turn:</string>
-    <string name="new_game">New Game</string>
+
+    <string name="tie">Tie!</string>
+    <string name="xWins">X Wins!</string>
+    <string name="oWins">O Wins!</string>
 </resources>

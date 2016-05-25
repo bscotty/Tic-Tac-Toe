@@ -264,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle the win conditions.
         Toast winMsg;
         TextView Winner = (TextView) findViewById(R.id.Winner);
+        Winner.setText(getText(R.string.spaceValue));
         Winner.setVisibility(View.VISIBLE);
         if(xWins) {
             // Reveal Winning Messages

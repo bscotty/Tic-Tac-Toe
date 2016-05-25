@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean isNotFinished;
 
     // Player Piece Strings
-    private String xMsg = getString(R.string.xValue);
-    private String oMsg = getString(R.string.oValue);
+    private String xMsg;
+    private String oMsg;
 
     // The board state
     private View board;
@@ -41,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        xMsg = getString(R.string.xValue);
+        oMsg = getString(R.string.oValue);
 
         // Initialize the match history, turn, and board variables.
         instructions = new ArrayList<>();
@@ -273,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
             winMsg.show();
             Winner.setText(R.string.oWins);
 
-        // If no one has one, and the turn timer has run out, end the game.
+            // If no one has one, and the turn timer has run out, end the game.
         } else if(turnCount == 0) {
             // Reveal Tie Messages
             Winner.setText(R.string.tie);

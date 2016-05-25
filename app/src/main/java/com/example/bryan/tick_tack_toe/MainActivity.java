@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean isNotFinished;
 
     // Player Piece Strings
-    private String xMsg;
-    private String oMsg;
+    private String xValue;
+    private String oValue;
 
     // The board state
     private View board;
@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        xMsg = getString(R.string.xValue);
-        oMsg = getString(R.string.oValue);
+        xValue = getString(R.string.xValue);
+        oValue = getString(R.string.oValue);
 
         // Initialize the match history, turn, and board variables.
         instructions = new ArrayList<>();
@@ -60,8 +60,15 @@ public class MainActivity extends AppCompatActivity {
             for(int i = 0; i < instructions.size(); i++) {
                 messageHandler(instructions.get(i));
             }
+            // If there is an odd number of instructions, then the turn indicator will be set to
+            // the wrong value. We can handle this here.
+            if(instructions.size() % 2 != 0) {
+                turn = !turn;
+            }
+            isNotFinished = checkNotFinished();
         }
-        evaluateBoard();
+
+
 
     }
 
@@ -73,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Sends a message alerting the event handling system that there was a tile clicked.
+     * Sends a message alerting the event handling system that there was a tile clicked, and
+     * swaps the turn to the opposite player.
      *
      * @param view the tile clicked
      */
@@ -91,8 +99,18 @@ public class MainActivity extends AppCompatActivity {
      * @param view the new game button.
      */
     public void onNewGame(View view) {
+        // Create the message.
         String msg = getTurn() + "\n";
-        msg = msg + view.getTag().toString();
+        msg += view.getTag().toString();
+
+        // Empty the instructions list, as a new game has begun.
+        instructions.clear();
+        instructions.add(msg);
+
+        // Output New Game Message
+        String newTurn = getTurn() + "'s Turn";
+        Toast start = Toast.makeText(getApplicationContext(), "New Game! " + newTurn, Toast.LENGTH_SHORT);
+        start.show();
 
         //TODO: replace this with an implemented event handling system.
         sendMessage(msg);
@@ -139,10 +157,6 @@ public class MainActivity extends AppCompatActivity {
      * @param buttonTag the tag of the button clicked.
      */
     private void handleNewGame(String player, String buttonTag) {
-        // Empty the instructions list, as a new game has begun.
-        instructions.clear();
-        instructions.add(player + "\n" + buttonTag);
-
         // Reset initial variables.
         turnCount = 9;
         isNotFinished = true;
@@ -160,10 +174,7 @@ public class MainActivity extends AppCompatActivity {
         ((Button) board.findViewWithTag("button21")).setText(getString(R.string.spaceValue));
         ((Button) board.findViewWithTag("button22")).setText(getString(R.string.spaceValue));
 
-        // Output New Game Message
-        String newTurn = player + "'s Turn";
-        Toast start = Toast.makeText(getApplicationContext(), "New Game! " + newTurn, Toast.LENGTH_SHORT);
-        start.show();
+        evaluateBoard();
     }
 
     /**
@@ -173,19 +184,19 @@ public class MainActivity extends AppCompatActivity {
      * @param buttonTag the tag of the button clicked.
      */
     private void handleTileClick(String player, String buttonTag) {
-        // Only changes the value if the current value is empty.
         Button b = (Button) board.findViewWithTag(buttonTag);
+        isNotFinished = checkNotFinished();
+        // Only changes the value if the current value is empty and the game has not finished yet.
         if (b.getText().toString().equals(getString(R.string.spaceValue)) && isNotFinished) {
             b.setText(player);
+
+            turn = !turn;
             turnCount--;
 
-            // Check if the game is still going after the most recent turn. If it is, move to the next turn.
-            isNotFinished = checkNotFinished();
-            if(isNotFinished) {
-                turn = !turn;
-                TextView turnNumber = (TextView) findViewById(R.id.turnNumber);
-                turnNumber.setText(getTurn());
-            }
+            TextView turnNumber = (TextView) findViewById(R.id.turnDisplay);
+            turnNumber.setText(getTurn());
+            checkNotFinished();
+
         }
     }
 
@@ -197,9 +208,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private String getTurn() {
         if(turn) {
-            return xMsg;
+            return xValue;
         } else {
-            return oMsg;
+            return oValue;
         }
     }
 
@@ -219,10 +230,10 @@ public class MainActivity extends AppCompatActivity {
                 // value of 6 without getting 3 Os.
 
                 // If there's an X in this button, store a 1
-                if(tileValue.equals(xMsg)) {
+                if(tileValue.equals(xValue)) {
                     boardValues[i][j] = 1;
                     // If there's an O in this button, store a 2
-                } else if (tileValue.equals(oMsg)) {
+                } else if (tileValue.equals(oValue)) {
                     boardValues[i][j] = 2;
                     // Otherwise, there's a space. -5 was chosen arbitrarily to keep row values unique.
                 } else {
@@ -268,16 +279,17 @@ public class MainActivity extends AppCompatActivity {
         Winner.setVisibility(View.VISIBLE);
         if(xWins) {
             // Reveal Winning Messages
-            winMsg = Toast.makeText(getApplicationContext(), "Game over. " + xMsg + " wins!", Toast.LENGTH_SHORT);
+            winMsg = Toast.makeText(getApplicationContext(), "Game over. " + xValue + " wins!", Toast.LENGTH_SHORT);
             winMsg.show();
             Winner.setText(R.string.xWins);
+            return false;
         } else if (oWins) {
             // Reveal Winning Messages
-            winMsg = Toast.makeText(getApplicationContext(), "Game over. " + oMsg + " wins!", Toast.LENGTH_SHORT);
+            winMsg = Toast.makeText(getApplicationContext(), "Game over. " + oValue + " wins!", Toast.LENGTH_SHORT);
             winMsg.show();
             Winner.setText(R.string.oWins);
-
-            // If no one has one, and the turn timer has run out, end the game.
+            return false;
+        // If no one has one, and the turn timer has run out, end the game.
         } else if(turnCount == 0) {
             // Reveal Tie Messages
             Winner.setText(R.string.tie);

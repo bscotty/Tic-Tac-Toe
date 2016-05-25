@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     public void onNewGame(View view) {
         turnCount = 9;
         isNotFinished = true;
+        ((TextView) findViewById(R.id.Winner)).setVisibility(View.INVISIBLE);
 
         // Set values for each tile to empty.
         ((Button) board.findViewWithTag("button00")).setText(getString(R.string.spaceValue));
@@ -158,11 +159,13 @@ public class MainActivity extends AppCompatActivity {
             // X wins
             Toast xWinner = Toast.makeText(getApplicationContext(), "Game over. X wins!", Toast.LENGTH_SHORT);
             xWinner.show();
+            ((TextView) findViewById(R.id.Winner)).setVisibility(View.VISIBLE);
             return false;
         } else if (oWins) {
             // O wins
-            Toast oWinner = Toast.makeText(getApplicationContext(), "Game over. O wins!", Toast.LENGTH_SHORT);
+                Toast oWinner = Toast.makeText(getApplicationContext(), "Game over. O wins!", Toast.LENGTH_SHORT);
             oWinner.show();
+            ((TextView) findViewById(R.id.Winner)).setVisibility(View.VISIBLE);
             return false;
         }
         // If none of the conditions are met, the game has not yet ended, and we can continue.

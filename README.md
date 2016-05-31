@@ -1,6 +1,6 @@
 # Tic-Tac-Toe
 
-##Latest Changes:
+##Latest Changes (May 31, 2016):
 
 Testing Implemented for the current code.
 
@@ -19,12 +19,10 @@ Testing Implemented for the current code.
 * Ensures that empty tiles cannot be added after the game has ended
 * Ensures that each of the 16 possible win scenarios actually end the game.
 
+
+# Previous Changes (May 26, 2016):
+
 Refactored code to set up an instruction/message system, and implemented precautions to work around the Life Cycle. Ultimately, the base level code and what is getting done is not all that different, but there are a few notable additions. 
-
-
-# Previous Changes:
-
-Initial Commit
 
 ##Changed Files: 
 
